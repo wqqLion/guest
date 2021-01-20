@@ -1,0 +1,30 @@
+@CHARSET "UTF-8";
+#register {
+	width:auto;
+	height:600px;
+	border:2px solid #ccc;
+	font-size:12px;
+	padding-top: 10px;
+}
+#register h2 {
+	text-indent:0;
+	text-align:center;
+}
+
+#register dl dd img#code {
+	position:relative;
+	top:8px;
+	cursor:pointer;
+}
+.register-form{
+  width: 80%;
+  margin: 0 auto;
+}
+.input-yzm{
+	width: calc(100% - 150px);
+}
+.yzm-img{
+	float: right;
+	position: relative;
+	top: -34px;
+}
