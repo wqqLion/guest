@@ -5,7 +5,7 @@
  * @Author: wqq
  * @Date: 2021-01-20 15:10:25
  * @LastEditors: wqq
- * @LastEditTime: 2021-01-20 17:08:02
+ * @LastEditTime: 2021-01-21 17:02:33
  */
 if (!defined('IN_TG')) {
   exit('Access Defined');
@@ -22,7 +22,7 @@ if (!defined('IN_TG')) {
       <a href="/guest/register.php">注册</a>
     </li>
     <li>
-      <a href="">登录</a>
+      <a href="/guest/login.php">登录</a>
     </li>
     <li>
       <a href="">个人中心</a>

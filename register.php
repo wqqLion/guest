@@ -5,11 +5,64 @@
  * @Author: wqq
  * @Date: 2021-01-20 15:27:44
  * @LastEditors: wqq
- * @LastEditTime: 2021-01-20 16:50:14
+ * @LastEditTime: 2021-01-21 16:59:54
  */
 //定义常量 授权调用includes 里的文件
+error_reporting(0);
+session_start();
 define('IN_TG', true);
 require './includes/common.inc.php';
+echo $_GET['action'];
+if ($_GET['action'] == 'register') {
+  if ($_POST['yzm'] !== $_SESSION['code']) {
+    _alert_back('验证码不正确');
+  }
+  include './includes/register.func.php';
+  $clean = array();
+  $clean['username'] = _check_username($_POST['username'], 2, 16);
+  $clean['qq'] = checkQQ($_POST['qq']);
+  $clean['password'] = chechPassword($_POST['password'], $_POST['notpassword'], 6, 20);
+  $clean['passt'] = checkQuestion($_POST['passt'], 6, 100);
+  $clean['passd'] = checkAnswer($_POST['passd'], 6, 100);
+  $clean['email'] = checkEmail($_POST['email']);
+  $clean['sex'] = $_POST['sex'];
+  //验证用户名是否存在
+  $result = mysqli_query($conn, "SELECT userName FROM user WHERE userName = '{$clean['username']}'");
+  if (!$result) {
+    die('查询shib');
+  }
+  //新增用户
+  $sqlAdd = "INSERT INTO user (
+                          userName,
+                          password,
+                          question,
+                          answer,
+                          sex,
+                          qq,
+                          email,
+                          regTime,
+                          regIp
+                        ) VALUES (
+                          '{$clean['username']}',
+                          '{$clean['password']}',
+                          '{$clean['passt']}',
+                          '{$clean['passd']}',
+                          '{$clean['sex']}',
+                          '{$clean['qq']}',
+                          '{$clean['email']}',
+                          NOW(),
+                          '{$_SERVER["REMOTE_ADDR"]}'
+                        )";
+  $resultAdd = mysqli_query($conn, $sqlAdd);
+  if(!$resultAdd){
+    die('新增用户失败：'. mysqli_error($conn));
+  }
+  mysqli_close($conn);
+  _location('注册成功！','/guest/index.php');
+  print_r($clean);
+} else {
+  $_SESSION['uniqid'] = $uniqid = sha1Uniqid();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,83 +83,65 @@ require './includes/common.inc.php';
   ?>
 
   <div id="register">
-    <!-- <form method="post" action="post.php">
-      <dl>
-        <dt>请认真填写一下内容</dt>
-        <dd>用&nbsp; 户 &nbsp;名：<input type="text" name="username" class="text" />(*必填，至少两位)</dd>
-        <dd>密　　码：<input type="password" name="password" class="text" />(*必填，至少六位)</dd>
-        <dd>确认密码：<input type="password" name="notpassword" class="text" />(*必填，同上)</dd>
-        <dd>密码提示：<input type="text" name="passt" class="text" />(*必填，至少两位)</dd>
-        <dd>密码回答：<input type="text" name="passd" class="text" />(*必填，至少两位)</dd>
-        <dd>性　　别：<input type="radio" name="sex" value="男" checked="checked" />男 <input type="radio" name="sex" value="女" />女</dd>
-        <dd class="face"><img src="face/m01.gif" alt="头像选择" onclick="javascript:window.open('face.php','face','width=400,height=400,top=0,left=0')" /></dd>
-        <dd>电子邮件：<input type="text" name="email" class="text" /></dd>
-        <dd>　Q Q 　：<input type="text" name="qq" class="text" /></dd>
-        <dd>主页地址：<input type="text" name="url" class="text" value="http://" /></dd>
-        <dd>验 证 码：<input type="text" name="yzm" class="text yzm" /></dd>
-        <dd><input type="submit" class="submit" value="注册" /></dd>
-      </dl>
-    </form> -->
-    <form class="form-horizontal register-form">
+    <form class="form-horizontal register-form" name="register" action="register.php?action=register" method="post">
       <div class="form-group">
-        <label for="inputEmail3" class="col-sm-2 control-label">用户名</label>
+        <label for="username" class="col-sm-2 control-label">用户名</label>
         <div class="col-sm-10">
-          <input type="email" class="form-control" id="inputEmail3" placeholder="用户名">
+          <input type="text" class="form-control" id="username" name="username" placeholder="用户名">
         </div>
       </div>
       <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">密码</label>
+        <label for="password" class="col-sm-2 control-label">密码</label>
         <div class="col-sm-10">
-          <input type="password" class="form-control" id="inputPassword3" placeholder="密码">
+          <input type="password" class="form-control" id="password" name="password" placeholder="密码">
         </div>
       </div>
       <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">密码</label>
+        <label for="notpassword" class="col-sm-2 control-label">密码</label>
         <div class="col-sm-10">
-          <input type="password" class="form-control" id="inputPassword3" placeholder="密码">
+          <input type="password" class="form-control" id="notpassword" name="notpassword" placeholder="密码">
         </div>
       </div>
       <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">密码提示</label>
+        <label for="passt" class="col-sm-2 control-label">密码提示</label>
         <div class="col-sm-10">
-          <input type="password" class="form-control" id="inputPassword3" placeholder="密码提示">
+          <input type="text" class="form-control" id="passt" name="passt" placeholder="密码提示">
         </div>
       </div>
       <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">密码回答</label>
+        <label for="passd" class="col-sm-2 control-label">密码回答</label>
         <div class="col-sm-10">
-          <input type="password" class="form-control" id="inputPassword3" placeholder="密码回答">
+          <input type="text" class="form-control" id="passd" name="passd" placeholder="密码回答">
         </div>
       </div>
       <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">性别</label>
+        <label for="sex" class="col-sm-2 control-label">性别</label>
         <div class="col-sm-10">
           <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> 男
+            <input type="radio" name="inlineRadioOptions" id="sex-man" name="sex" value="1" checked> 男
           </label>
           <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> 女
+            <input type="radio" name="inlineRadioOptions" id="sex-woman" name="sex" value="2"> 女
           </label>
         </div>
       </div>
       <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">电子邮件</label>
+        <label for="email" class="col-sm-2 control-label">电子邮件</label>
         <div class="col-sm-10">
-          <input type="password" class="form-control" id="inputPassword3" placeholder="电子邮件">
+          <input type="email" class="form-control" id="email" name="email" placeholder="电子邮件">
         </div>
       </div>
       <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">QQ</label>
+        <label for="qq" class="col-sm-2 control-label">QQ</label>
         <div class="col-sm-10">
-          <input type="password" class="form-control" id="inputPassword3" placeholder="QQ">
+          <input type="text" class="form-control" id="qq" name="qq" placeholder="QQ">
         </div>
       </div>
       <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">验证码</label>
+        <label for="yzm" class="col-sm-2 control-label">验证码</label>
         <div class="col-sm-10">
-          <input type="password" class="form-control input-yzm" id="inputPassword3" placeholder="验证码">
-          <!-- <img src="code.php" alt=""> -->
-          <img class="yzm-img" title="点击刷新" src="code.php" align="absbottom" οnclick="this.src='code.php?'+Math.random();"></img>
+          <input type="text" class="form-control input-yzm" id="yzm" name="yzm" placeholder="验证码">
+          <img class="yzm-img" title="点击刷新" src="code.php" align="absbottom"></img>
         </div>
       </div>
       <div class="form-group">
@@ -120,7 +155,7 @@ require './includes/common.inc.php';
       </div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-default">注册</button>
+          <button type="submit" class="btn btn-default sumbit">注册</button>
         </div>
       </div>
     </form>
@@ -131,6 +166,14 @@ require './includes/common.inc.php';
   ?>
   <script src="./lib/bootstrap/js/jquery.min.js"></script>
   <script src="./lib/bootstrap/js/bootstrap.min.js"></script>
+  <script>
+    $(function() {
+      $('.yzm-img').click(function() {
+        var src = 'code.php?t=' + (new Date()).getTime();
+        $(this).attr('src', src);
+      })
+    })
+  </script>
 </body>
 
 </html>
