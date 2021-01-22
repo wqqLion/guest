@@ -5,7 +5,7 @@
  * @Author: wqq
  * @Date: 2021-01-20 15:22:02
  * @LastEditors: wqq
- * @LastEditTime: 2021-01-21 16:56:17
+ * @LastEditTime: 2021-01-22 11:06:04
  */
 
 function _runtimes()
@@ -30,7 +30,12 @@ function mysqlString($string)
   global $conn;
   return mysqli_real_escape_string($conn, $string);
 }
-function _location($_info,$_url) {
-	echo "<script type='text/javascript'>alert('$_info');location.href='$_url';</script>";
-	exit();
+function _location($_info, $_url)
+{
+  if (!empty($_info)) {
+    echo "<script type='text/javascript'>alert('$_info');location.href='$_url';</script>";
+    exit();
+  } else {
+    header('Location:'.$_url);
+  }
 }

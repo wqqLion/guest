@@ -23,9 +23,12 @@
 .input-yzm{
 	width: calc(100% - 150px);
 }
+.form-group{
+	position:relative;
+}
 .yzm-img{
-	float: right;
-	position: relative;
-	top: -34px;
+	position: absolute;
+	top: 0px;
 	cursor: pointer;
+	right: 15px;
 }

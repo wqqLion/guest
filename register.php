@@ -5,20 +5,28 @@
  * @Author: wqq
  * @Date: 2021-01-20 15:27:44
  * @LastEditors: wqq
- * @LastEditTime: 2021-01-21 16:59:54
+ * @LastEditTime: 2021-01-22 12:13:34
  */
 //定义常量 授权调用includes 里的文件
 error_reporting(0);
 session_start();
 define('IN_TG', true);
 require './includes/common.inc.php';
-echo $_GET['action'];
 if ($_GET['action'] == 'register') {
   if ($_POST['yzm'] !== $_SESSION['code']) {
     _alert_back('验证码不正确');
   }
   include './includes/register.func.php';
   $clean = array();
+  $photoType = $_FILES["file"]["type"];
+  $photoType = strtolower($photoType);
+  if ($photoType !== 'image/jpg' && $photoType !== 'image.png' && $photoType !== 'image/jpeg') {
+    _alert_back('只允许上传png或jpg图片');
+  }
+
+  if ($_FILES["file"]["size"] > 204800) {
+    _alert_back('图片最大200kb');
+  }
   $clean['username'] = _check_username($_POST['username'], 2, 16);
   $clean['qq'] = checkQQ($_POST['qq']);
   $clean['password'] = chechPassword($_POST['password'], $_POST['notpassword'], 6, 20);
@@ -26,6 +34,15 @@ if ($_GET['action'] == 'register') {
   $clean['passd'] = checkAnswer($_POST['passd'], 6, 100);
   $clean['email'] = checkEmail($_POST['email']);
   $clean['sex'] = $_POST['sex'];
+
+  $path = './upfiles/photo' . $_FILES['file']['name'];
+  $filename = basename($path); // basename($path):返回基本的文件名，如：文件名.doc
+  $actualname = $filename;
+  $extpos = strrpos($filename, '.'); //返回字符串filename中'.'号最后一次出现的数字位置
+  $ext = substr($filename, $extpos + 1);
+  $studentid = $_SESSION['uid'];
+  $file = $studentid . '.' . $ext;
+  $path = 'uploads/photo/' . sha1($clean['username']) . '.' . $ext;
   //验证用户名是否存在
   $result = mysqli_query($conn, "SELECT userName FROM user WHERE userName = '{$clean['username']}'");
   if (!$result) {
@@ -41,7 +58,8 @@ if ($_GET['action'] == 'register') {
                           qq,
                           email,
                           regTime,
-                          regIp
+                          regIp,
+                          face
                         ) VALUES (
                           '{$clean['username']}',
                           '{$clean['password']}',
@@ -51,14 +69,16 @@ if ($_GET['action'] == 'register') {
                           '{$clean['qq']}',
                           '{$clean['email']}',
                           NOW(),
-                          '{$_SERVER["REMOTE_ADDR"]}'
+                          '{$_SERVER["REMOTE_ADDR"]}',
+                          '$path'
                         )";
   $resultAdd = mysqli_query($conn, $sqlAdd);
-  if(!$resultAdd){
-    die('新增用户失败：'. mysqli_error($conn));
+  if (!$resultAdd) {
+    die('新增用户失败：' . mysqli_error($conn));
   }
   mysqli_close($conn);
-  _location('注册成功！','/guest/index.php');
+  move_uploaded_file($_FILES["file"]["tmp_name"], $path);
+  _location('注册成功！', '/guest/index.php');
   print_r($clean);
 } else {
   $_SESSION['uniqid'] = $uniqid = sha1Uniqid();
@@ -83,7 +103,7 @@ if ($_GET['action'] == 'register') {
   ?>
 
   <div id="register">
-    <form class="form-horizontal register-form" name="register" action="register.php?action=register" method="post">
+    <form class="form-horizontal register-form" name="register" enctype="multipart/form-data" action="register.php?action=register" method="post">
       <div class="form-group">
         <label for="username" class="col-sm-2 control-label">用户名</label>
         <div class="col-sm-10">
@@ -145,12 +165,9 @@ if ($_GET['action'] == 'register') {
         </div>
       </div>
       <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox">记住密码
-            </label>
-          </div>
+        <label for="qq" class="col-sm-2 control-label">头像</label>
+        <div class="col-sm-10">
+          <input type="file" accept=".png,.jpg" id="file" name="file" placeholder="QQ">
         </div>
       </div>
       <div class="form-group">
