@@ -5,7 +5,7 @@
  * @Author: wqq
  * @Date: 2021-01-20 15:10:25
  * @LastEditors: wqq
- * @LastEditTime: 2021-01-22 15:31:31
+ * @LastEditTime: 2021-01-28 10:07:00
  */
 if (!defined('IN_TG')) {
   exit('Access Defined');
@@ -22,7 +22,7 @@ if (!defined('IN_TG')) {
     </li>
     <?php
     if (isset($_COOKIE['username'])) {
-      echo "<li><a href='login.php'>个人中心</a></li>";
+      echo "<li><a href='member.php'>个人中心</a></li>";
     } else {
       echo "<li><a href='register.php'>注册</a></li>";
       echo "<li><a href='login.php'>登录</a></li>";

@@ -5,7 +5,7 @@
  * @Author: wqq
  * @Date: 2021-01-22 11:10:03
  * @LastEditors: wqq
- * @LastEditTime: 2021-01-22 17:33:37
+ * @LastEditTime: 2021-01-28 10:30:23
  */
 //定义常量 授权调用includes 里的文件
 error_reporting(0);
@@ -50,6 +50,9 @@ $result = mysqli_query($conn, $sql);
       <div class="row">
         <?php while (!!$rows = mysqli_fetch_array($result, MYSQLI_ASSOC)) { ?>
           <div class="col-md-3">
+            <div class="username">
+              <?php echo $rows['userName'] ?>
+            </div>
             <div class="img-box">
               <?php if (empty($rows['face'])) {
                 echo "<img src='images/defauclt_face.gif' />";

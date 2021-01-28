@@ -5,7 +5,7 @@
  * @Author: wqq
  * @Date: 2021-01-20 15:27:44
  * @LastEditors: wqq
- * @LastEditTime: 2021-01-22 12:17:51
+ * @LastEditTime: 2021-01-28 10:58:11
  */
 //定义常量 授权调用includes 里的文件
 error_reporting(0);
@@ -30,8 +30,6 @@ if ($_GET['action'] == 'register') {
   $clean['username'] = _check_username($_POST['username'], 2, 16);
   $clean['qq'] = checkQQ($_POST['qq']);
   $clean['password'] = chechPassword($_POST['password'], $_POST['notpassword'], 6, 20);
-  $clean['passt'] = checkQuestion($_POST['passt'], 6, 100);
-  $clean['passd'] = checkAnswer($_POST['passd'], 6, 100);
   $clean['email'] = checkEmail($_POST['email']);
   $clean['sex'] = $_POST['sex'];
 
@@ -52,8 +50,6 @@ if ($_GET['action'] == 'register') {
   $sqlAdd = "INSERT INTO user (
                           userName,
                           password,
-                          question,
-                          answer,
                           sex,
                           qq,
                           email,
@@ -63,8 +59,6 @@ if ($_GET['action'] == 'register') {
                         ) VALUES (
                           '{$clean['username']}',
                           '{$clean['password']}',
-                          '{$clean['passt']}',
-                          '{$clean['passd']}',
                           '{$clean['sex']}',
                           '{$clean['qq']}',
                           '{$clean['email']}',
@@ -116,31 +110,19 @@ if ($_GET['action'] == 'register') {
         </div>
       </div>
       <div class="form-group">
-        <label for="notpassword" class="col-sm-2 control-label">密码</label>
+        <label for="notpassword" class="col-sm-2 control-label">确认密码</label>
         <div class="col-sm-10">
           <input type="password" class="form-control" id="notpassword" name="notpassword" placeholder="密码">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="passt" class="col-sm-2 control-label">密码提示</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="passt" name="passt" placeholder="密码提示">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="passd" class="col-sm-2 control-label">密码回答</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="passd" name="passd" placeholder="密码回答">
         </div>
       </div>
       <div class="form-group">
         <label for="sex" class="col-sm-2 control-label">性别</label>
         <div class="col-sm-10">
           <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="sex-man" name="sex" value="1" checked> 男
+            <input type="radio" id="sex-man" name="sex" value="1" checked> 男
           </label>
           <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="sex-woman" name="sex" value="2"> 女
+            <input type="radio" id="sex-woman" name="sex" value="2"> 女
           </label>
         </div>
       </div>
