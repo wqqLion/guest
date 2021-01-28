@@ -5,7 +5,7 @@
  * @Author: wqq
  * @Date: 2021-01-20 15:27:44
  * @LastEditors: wqq
- * @LastEditTime: 2021-01-22 12:13:34
+ * @LastEditTime: 2021-01-22 12:17:51
  */
 //定义常量 授权调用includes 里的文件
 error_reporting(0);
@@ -79,7 +79,6 @@ if ($_GET['action'] == 'register') {
   mysqli_close($conn);
   move_uploaded_file($_FILES["file"]["tmp_name"], $path);
   _location('注册成功！', '/guest/index.php');
-  print_r($clean);
 } else {
   $_SESSION['uniqid'] = $uniqid = sha1Uniqid();
 }

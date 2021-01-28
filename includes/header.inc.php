@@ -5,7 +5,7 @@
  * @Author: wqq
  * @Date: 2021-01-20 15:10:25
  * @LastEditors: wqq
- * @LastEditTime: 2021-01-22 11:11:41
+ * @LastEditTime: 2021-01-22 15:31:31
  */
 if (!defined('IN_TG')) {
   exit('Access Defined');
@@ -18,7 +18,7 @@ if (!defined('IN_TG')) {
       <a href="index.php">首页</a>
     </li>
     <li>
-      <a href="blog.php">博友</a>
+      <a href="blog.php?page=1">博友</a>
     </li>
     <?php
     if (isset($_COOKIE['username'])) {
