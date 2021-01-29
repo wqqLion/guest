@@ -5,7 +5,7 @@
  * @Author: wqq
  * @Date: 2021-01-21 09:38:48
  * @LastEditors: wqq
- * @LastEditTime: 2021-01-21 11:04:25
+ * @LastEditTime: 2021-01-29 17:09:31
  */
 
 /**
@@ -88,4 +88,21 @@ function checkEmail($email)
     _alert_back('请输入正确的Email');
   }
   return mysqlString($email);
+}
+
+function checkContent($_string) {
+	if (mb_strlen($_string,'utf-8') > 200) {
+		_alert_back('短信内容不得小于10位或者大于200位！');
+	}
+	return mysqlString($_string);
+}
+
+function checkTitle($_string) {
+  if(empty($_string)){
+    _alert_back('标题不能为空');
+  }
+	if (mb_strlen($_string,'utf-8') > 20) {
+		_alert_back('短信内容不得大于20位！');
+	}
+	return mysqlString($_string);
 }

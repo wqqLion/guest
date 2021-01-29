@@ -5,7 +5,7 @@
  * @Author: wqq
  * @Date: 2021-01-22 11:10:03
  * @LastEditors: wqq
- * @LastEditTime: 2021-01-28 10:30:23
+ * @LastEditTime: 2021-01-29 16:33:30
  */
 //定义常量 授权调用includes 里的文件
 error_reporting(0);
@@ -61,7 +61,7 @@ $result = mysqli_query($conn, $sql);
 
             <div class="row">
               <div class="col-md-6 operation">
-                发消息
+                <a href="message.php?id=<?php echo $rows['id'] ?>">发消息</a>
               </div>
               <div class="col-md-6 operation">
                 加为好友
